@@ -6,8 +6,9 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 60
+    name: Run Playwright Tests
     runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +27,7 @@ jobs:
         run: npx playwright test
 
   trigger-repos:
+    name: Trigger Dependent Repos
     runs-on: ubuntu-latest
     needs: test
 
@@ -35,6 +37,7 @@ jobs:
           curl -X POST \
           https://api.github.com/repos/Arfaa49/Repo-2/dispatches \
           -H "Accept: application/vnd.github+json" \
+          -H "Authorization: token ${{ secrets.REPO1_TOKEN }}" \
           -d '{"event_type":"run-tests"}'
 
       - name: Trigger Repo3
@@ -42,6 +45,7 @@ jobs:
           curl -X POST \
           https://api.github.com/repos/Arfaa49/Repo-3/dispatches \
           -H "Accept: application/vnd.github+json" \
+          -H "Authorization: token ${{ secrets.REPO1_TOKEN }}" \
           -d '{"event_type":"run-tests"}'
 
       - name: Trigger Repo4
@@ -49,4 +53,5 @@ jobs:
           curl -X POST \
           https://api.github.com/repos/Arfaa49/Repo-4/dispatches \
           -H "Accept: application/vnd.github+json" \
+          -H "Authorization: token ${{ secrets.REPO1_TOKEN }}" \
           -d '{"event_type":"run-tests"}'
